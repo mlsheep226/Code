@@ -1,0 +1,109 @@
+import java.util.*;
+ 
+public class quick
+{
+
+	public static void randomQuicksort(int [] array, int left, int right)
+	{
+		if(left < right)
+		{
+			int pivot = randomPivot(array, left, right);
+			quicksort(array, left, pivot-1);
+			quicksort(array, pivot+1, right);
+		}
+	}
+ 
+	public static void quicksort(int [] array, int left, int right)
+	{
+		if(left < right)
+		{
+			int pivots = pivot(array, left, right);
+			quicksort(array, left, pivots - 1);
+			quicksort(array, pivots + 1, right);
+		}
+	}
+ 
+	public static int randomPivot(int [] array, int left, int right)
+	{
+		Random ran = new Random();
+		int i = ran.nextInt(array.length);
+ 
+		int temp = array[right];
+		array[right] = array[i];
+		array[i] = temp;
+
+		return pivot(array, left, right);
+	}
+ 
+	/** Partition, makes elements on left of pivot are less than pivot, elements on right of pivot are greater than pivot
+	 * @param array integer array
+	 * @param p index of left boundary
+	 * @param r index of right boundary
+	 * @return index of pivot
+	 */
+	public static int pivot(int [] array, int left, int right)
+	{
+		int pivot = array[right];
+		int i = left-1;
+		for(int j = left; j < right; j++)
+		{
+			if(array[j] < pivot)
+			{
+				i++;
+				int temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+			}
+		}
+		int temp = array[i+1];
+		array[i+1] = array[right];
+		array[right] = temp;
+ 
+		//System.out.println("Pivot: "+pivot);
+		//display(array, left, right);
+ 
+		return i+1;
+	}
+ 
+	public static int [] getArray(int size)
+	{
+		int [] array = new int[size];
+		Random r = new Random();
+ 
+		for(int i = 0; i < size; i++) {
+			array[i] = r.nextInt(100);
+		}
+		return array;
+	}
+ 
+	public static void display(int [] array, int left, int right)
+	{
+		for(int i = left; i <= right; i++) {
+			System.out.printf("%5d", array[i]);
+		}
+		System.out.println();
+	}
+ 
+	public static void main(String args[])
+	{
+		int [] array;
+		array = getArray(500000);
+ 
+		int [] array2;
+		array2 = Arrays.copyOf(array, array.length);
+ 
+		long start, end;
+ 
+		//quicksort Time
+		start = System.currentTimeMillis();
+		quicksort(array, 0, array.length-1);
+		end = System.currentTimeMillis();
+	    	System.out.printf("Quick sort time: %10f%n", (end-start)/1000000.0);
+ 
+		//random quicksort time
+		start = System.currentTimeMillis();
+		randomQuicksort(array2, 0, array2.length-1);
+		end = System.currentTimeMillis();
+	    	System.out.printf("Random quicksort time: %10f%n", (end-start)/1000000.0);
+	}
+}

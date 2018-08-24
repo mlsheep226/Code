@@ -1,0 +1,117 @@
+import numpy as nump
+import string
+
+#@author MItchell Sheep
+#@version 1.0
+#@since 3/29/2018
+#-------------------------------------------------------
+#This function returns to values for cae of match or mismatcih
+
+def Diagonal(n1,n2,pt):
+    if(n1 == n2):
+        return pt['MATCH']
+    else:
+        return pt['MISMATCH']
+
+#------------------------------------------------------------   
+#This function gets the optional elements of the aligment matrix and returns the elements for the pointers matrix.
+def Pointers(di,ho,ve):
+
+    pointer = max(di,ho,ve) #based on python default maximum(return the first element).
+
+    if(di == pointer):
+        return 'D'
+    elif(ho == pointer):
+        return 'H'
+    else:
+         return 'V'   
+#------------------------------------------------------------   
+def findAlign(s1,s2,match,mis, gap):
+    penalty = {'MATCH': match, 'MISMATCH': mis, 'GAP': gap} #A dictionary for all the penalty valuse.
+    n = len(s1) + 1 #The dimension of the matrix columns.
+    m = len(s2) + 1 #The dimension of the matrix rows.
+    al = nump.zeros((m,n),dtype = int) #Initializes the alighment matrix with zeros.
+    p = nump.zeros((m,n),dtype = str) #Initializes the alighment matrix with zeros.
+    best = 0
+    bests = {}
+    optloc = (0,0)
+    #Scans all the first rows element in the matrix and fill it with "gap penalty"
+    for i in range(m):
+        al[i][0] = penalty['GAP'] * i
+        p[i][0] = 'V'
+    #Scans all the first columns element in the matrix and fill it with "gap penalty"
+    for j in range (n):
+        al[0][j] = penalty['GAP'] * j
+        p[0][j] = 'H'
+    #Fill the matrix with the correct values.
+
+    p[0][0] = 0 #Return the first element of the pointer matrix back to 0.
+    for i in range(1,m):
+        for j in range(1,n):
+            di = al[i-1][j-1] + Diagonal(s1[j-1],s2[i-1],penalty) #The value for match/mismatch -  diagonal.
+            ho = al[i][j-1] + penalty['GAP'] #The value for gap - horizontal.(from the left cell)
+            ve = al[i-1][j] + penalty['GAP'] #The value for gap - vertical.(from the upper cell)
+            al[i][j] = max(di,ho,ve) #Fill the matrix with the maximal value.(based on the python default maximum)
+            p[i][j] = Pointers(di,ho,ve)
+	    if al[i][j] >= best:
+		best = al[i][j]
+		optloc = (i,j)
+		if best in bests.keys():
+		    array = bests[best]
+		    array.append(optloc)
+		    bests[best] = array
+		else:
+		    arr = []
+		    arr.append(optloc)
+		    bests[best] = arr
+
+    print nump.matrix(al)
+    print "\n---------------------------------------\n"
+    print nump.matrix(p)
+    print "\n---------------------------------------\n"
+    loc = bests[best]
+    score = best
+    length = 0
+    bestLoc = (0,0)
+    for j in loc:
+	x = j[0] - 1
+	y = j[1] - 1 
+	test = 0
+	arr = []
+        arr2 = []
+	while x > 0 and y > 0:
+            if (al[x][y] != 0):
+	        arr.append(s1[y])
+                arr2.append(s2[x])
+	        test += 1
+                x -= 1
+	        y -= 1
+	        if test >= length:
+	            length = test
+	            bestLoc = (x, y)
+                    out = arr
+                    out2 = arr2
+
+            else: 
+                break
+
+    out = out[::-1]
+    out2 = out2[::-1]
+    print "The output for the best local alignment is:\n---------------------------------------\n"
+    print "Score: {}".format(score)
+    print ''.join(out)
+    print "\n"
+    print ''.join(out2)
+  
+#--------------------------------------------------------------
+#main of the program
+def main():
+    print "Enter two sequences with A, T, C, G, or U wit hspaces being -."
+    seq1 = raw_input("Enter Sequence 1: ")
+    seq2 = raw_input("Enter Sequence 2: ")
+    match = int(raw_input("Enter in the match count: "))
+    mis = int(raw_input("Enter in the miss dec (negative): "))
+    gap = int(raw_input("Enter in the gap dec(negative): "))
+
+    findAlign(seq1, seq2, match, mis, gap)
+main()

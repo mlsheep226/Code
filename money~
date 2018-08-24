@@ -1,0 +1,5 @@
+def main():
+	money = int(raw_input("Enter in amount of change: "))
+	while t:
+	
+main()
