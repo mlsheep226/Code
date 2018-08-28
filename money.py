@@ -28,7 +28,7 @@ def findChange(coins, money):
 def main():
     coins = []
     money = int(raw_input("Enter in amount of change: "))
-    print "Enter in a list of your contries coin amounts from smallest to largest"
+    print "Enter in a list of your countries coin amounts from smallest to largest"
     t = " "
     print "(Press [Enter] on blank when done)"
     while t != "":
