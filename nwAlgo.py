@@ -1,9 +1,9 @@
 import numpy as nump
 import string
 
-#@author MItchell Sheep
-#@version 1.0
-#@since 3/29/2018
+__author__ = "Mitchell Sheep"
+__status__ = "Working"
+#3/29/2018
 #-------------------------------------------------------
 #This function returns to values for cae of match or mismatcih
 
